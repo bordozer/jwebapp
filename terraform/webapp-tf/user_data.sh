@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "version 1"
+echo "Source code hash: '${t_source_code_hash}'"
 
 # install software
 sudo yum update -y

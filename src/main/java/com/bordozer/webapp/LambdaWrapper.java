@@ -66,10 +66,10 @@ public class LambdaWrapper {
                 final var responseCode = response.getStatusLine().getStatusCode();
                 final HttpEntity entity = response.getEntity();
                 final var responseBody = EntityUtils.toString(entity);
-                if (responseCode != HttpStatus.OK.value()) {
-                    return JsonUtils.read(responseBody, LambdaErrorResponse.class);
+                if (responseCode == HttpStatus.OK.value()) {
+                    return JsonUtils.read(responseBody, LambdaSuccessResponse.class);
                 }
-                return JsonUtils.read(responseBody, LambdaSuccessResponse.class);
+                return JsonUtils.read(responseBody, LambdaErrorResponse.class);
             }
         } catch (final IOException ex) {
             log.error("Error calling lambda", ex);

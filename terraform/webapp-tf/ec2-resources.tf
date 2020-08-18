@@ -15,5 +15,6 @@ data "template_file" "ec2_userdata" {
     t_app_artifact_name = local.s3_app_artifact_name
     t_region = var.aws_region
     t_log_group = aws_cloudwatch_log_group.webapp_logs.name
+    t_source_code_hash = local.source_code_hash
   }
 }

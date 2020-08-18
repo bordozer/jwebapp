@@ -55,6 +55,8 @@ locals {
     Environment = var.environment_name
   }
   s3_app_artifact_name = local.aws_service_name
+  app_source_artifact = "../../build/libs/${var.service_name}.jar"
+  source_code_hash = filebase64sha256(local.app_source_artifact)
 }
 
 # List of email addresses as a string (space separated)
