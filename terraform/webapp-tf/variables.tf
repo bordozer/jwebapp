@@ -1,7 +1,10 @@
 variable "service_name" {}
 variable "environment_name" {}
 variable "route53_record" {}
+
 variable "git_hash" {}
+variable "git_branch" {}
+
 variable "ssh_public_key" {
   default = "webapp-key"
 }

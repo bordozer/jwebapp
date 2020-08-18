@@ -14,7 +14,8 @@ then
 fi
 
 GIT_HASH=$(git rev-parse --short HEAD)
-echo -e "Git hash: ${GIT_HASH}"
+GIT_BRANCH=$(git branch --show-current)
+echo -e "Git: ${GIT_BRANCH} (${GIT_HASH})"
 
 echo -e "Environment '${YELLOW}${ENV}${DEFAULT}' is going to be deployed to AWS"
 
@@ -28,4 +29,5 @@ terraform init \
 terraform apply -var-file="env/${ENV}.tfvars" -auto-approve \
   -var="service_name=${SERVICE_NAME}" \
   -var="environment_name=${ENV}" \
-  -var="git_hash=${GIT_HASH}"
+  -var="git_branch=${GIT_HASH}" \
+  -var="git_hash=${GIT_BRANCH}"

@@ -6,5 +6,6 @@ resource "aws_s3_bucket_object" "artifact_upload" {
 
   tags = {
     git_hash = var.git_hash
+    git_branch = var.git_branch
   }
 }
