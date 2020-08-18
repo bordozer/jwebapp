@@ -1,9 +1,9 @@
 package com.bordozer.webapp;
 
 import com.bordozer.webapp.exception.LambdaInvokeException;
-import com.bordozer.webapp.model.AbstractLambdaResponse;
-import com.bordozer.webapp.model.LambdaErrorResponse;
+import com.bordozer.webapp.model.LambdaResponse;
 import com.bordozer.webapp.model.LambdaSuccessResponse;
+import com.bordozer.webapp.model.LambdaUnauthorizedResponse;
 import com.bordozer.webapp.utils.JsonUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,7 @@ public class LambdaWrapper {
     private Integer lambdaPort;
 
     @SneakyThrows
-    public AbstractLambdaResponse invoke() {
+    public LambdaResponse invoke() {
         final URIBuilder builder = new URIBuilder();
         builder.setScheme(lambdaSchema)
                 .setHost(lambdaHost)
@@ -73,21 +73,21 @@ public class LambdaWrapper {
         }
     }
 
-    private AbstractLambdaResponse getLambdaResponse(final int responseCode, final String responseBody) {
+    private LambdaResponse getLambdaResponse(final int responseCode, final String responseBody) {
         final var httpStatus = HttpStatus.valueOf(responseCode);
+
+        final LambdaResponse response = new LambdaResponse();
+        response.setStatus(httpStatus);
+
         switch (httpStatus) {
             case OK:
-                return createLambdaResponse(httpStatus, responseBody, LambdaSuccessResponse.class);
+                response.setValue(JsonUtils.read(responseBody, LambdaSuccessResponse.class).getPayload());
+                return response;
             case UNAUTHORIZED:
-                return createLambdaResponse(httpStatus, responseBody, LambdaErrorResponse.class);
+                response.setValue(JsonUtils.read(responseBody, LambdaUnauthorizedResponse.class).getMessage());
+                return response;
             default:
                 throw new IllegalArgumentException(String.format("Unsupported lambda's response status: \"%s\"", httpStatus));
         }
-    }
-
-    private AbstractLambdaResponse createLambdaResponse(final HttpStatus httpStatus, final String responseBody, final Class<? extends AbstractLambdaResponse> clazz) {
-        final var response = JsonUtils.read(responseBody, clazz);
-        response.setStatus(httpStatus);
-        return response;
     }
 }

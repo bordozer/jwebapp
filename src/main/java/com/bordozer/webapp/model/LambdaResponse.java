@@ -6,6 +6,11 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
-public abstract class AbstractLambdaResponse {
+public class LambdaResponse {
     private HttpStatus status;
+    private String value;
+
+    public int getStatusCode() {
+        return status.value();
+    }
 }

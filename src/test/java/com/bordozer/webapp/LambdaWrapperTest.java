@@ -1,7 +1,5 @@
 package com.bordozer.webapp;
 
-import com.bordozer.webapp.model.LambdaErrorResponse;
-import com.bordozer.webapp.model.LambdaSuccessResponse;
 import com.bordozer.webapp.utils.CommonUtils;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -52,7 +50,7 @@ class LambdaWrapperTest {
         // given
         wm.stubFor(WireMock.get(WireMock.urlPathEqualTo(LAMBDA_PATH))
                 .willReturn(WireMock.aResponse()
-                        .withStatus(200)
+                        .withStatus(HttpStatus.OK.value())
                         .withHeader("Content-Type", "application/json")
                         .withBody(LAMBDA_SUCCESS_RESPONSE)
                 ));
@@ -61,8 +59,7 @@ class LambdaWrapperTest {
 
         //then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getClass()).isEqualTo(LambdaSuccessResponse.class);
-        assertThat(((LambdaSuccessResponse) response).getPayload()).isEqualTo("lambda value");
+        assertThat(response.getValue()).isEqualTo("lambda value");
     }
 
     @Test
@@ -71,7 +68,7 @@ class LambdaWrapperTest {
         // given
         wm.stubFor(WireMock.get(WireMock.urlPathEqualTo(LAMBDA_PATH))
                 .willReturn(WireMock.aResponse()
-                        .withStatus(401)
+                        .withStatus(HttpStatus.UNAUTHORIZED.value())
                         .withHeader("Content-Type", "application/json")
                         .withBody(LAMBDA_ERROR_RESPONSE)
                 ));
@@ -80,7 +77,6 @@ class LambdaWrapperTest {
 
         //then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED);
-        assertThat(response.getClass()).isEqualTo(LambdaErrorResponse.class);
-        assertThat(((LambdaErrorResponse) response).getMessage()).isEqualTo("Unauthorized");
+        assertThat(response.getValue()).isEqualTo("Unauthorized");
     }
 }
