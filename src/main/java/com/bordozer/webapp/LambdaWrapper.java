@@ -1,5 +1,6 @@
 package com.bordozer.webapp;
 
+import com.bordozer.webapp.exception.LambdaInvokeException;
 import com.bordozer.webapp.model.LambdaResponse;
 import com.bordozer.webapp.utils.JsonUtils;
 import lombok.SneakyThrows;
@@ -17,6 +18,7 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.net.URI;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -62,6 +64,9 @@ public class LambdaWrapper {
                 final var responseBody = EntityUtils.toString(entity);
                 return JsonUtils.read(responseBody, LambdaResponse.class);
             }
+        } catch (final IOException ex) {
+            log.error("Error calling lambda", ex);
+            throw new LambdaInvokeException(ex.getMessage());
         }
     }
 }
