@@ -1,0 +1,57 @@
+plugins {
+	id 'java'
+	id 'idea'
+	id 'application'
+	id 'org.springframework.boot' version '2.3.3.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+}
+
+group = 'com.bordozer'
+version = '0.0.1-SNAPSHOT'
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+	def logbackVersion = '1.2.3'
+	compile group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
+	compile group: 'ch.qos.logback', name: 'logback-core', version: logbackVersion
+
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	def mockitoVersion = '3.3.3'
+	testCompile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+	testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: mockitoVersion
+
+	testCompile group: 'org.assertj', name: 'assertj-core', version: '3.16.1'
+}
+
+test {
+	useJUnitPlatform()
+	systemProperties System.properties
+	testLogging {
+		events "failed"
+		exceptionFormat "full"
+		showStandardStreams = false
+	}
+}
+
+compileJava.dependsOn clean

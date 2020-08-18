@@ -1,0 +1,17 @@
+### gradle
+.gradle
+/build/
+/bemobi-sms-sdk/build/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+/out/
+
+### terraform
+*.tfstate
+*.tfstate.backup
+
+/terraform/webservice/.terraform/
