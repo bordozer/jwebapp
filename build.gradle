@@ -4,6 +4,7 @@ plugins {
 	id 'application'
 	id 'org.springframework.boot' version '2.3.3.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id "io.freefair.lombok" version "5.1.0"
 }
 
 group = 'com.bordozer'
@@ -19,15 +20,23 @@ configurations {
 	}
 }
 
+bootJar {
+	archiveFileName = 'webapp'
+	launchScript()
+}
+
 repositories {
 	mavenCentral()
+	jcenter()
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+
+	compile group: 'commons-io', name: 'commons-io', version: '2.7'
+	compile group: 'com.google.guava', name: 'guava', version: '29.0-jre'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
 
 	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
 	def logbackVersion = '1.2.3'

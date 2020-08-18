@@ -26,10 +26,28 @@ management:
 spring:
   profiles: dev
 
+aws:
+  lambda:
+    schema: http
+    host: localhost
+    port: 9112
+
 ---
 spring:
   profiles: aws-test
 
+aws:
+  lambda:
+    schema: https
+    host: localhost
+    port: 9112
+
 ---
 spring:
   profiles: aws-prod
+
+aws:
+  lambda:
+    schema: https
+    host: localhost
+    port: 9112
