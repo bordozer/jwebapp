@@ -37,9 +37,9 @@ variable "ec2_instance_root_volume_size" { default = "8" }
 variable "sns_topic_name" { default = "vgn-notifications" }
 
 /* Application parameters */
-variable "app_port" { default = 8966 }
-variable "app_health_check_uri" { default = "/api/health-check" }
-variable "app_health_port" { default = 8966 }
+variable "app_port" { default = 9011 }
+variable "app_health_check_uri" { default = "/api/health" }
+variable "app_health_port" { default = 9011 }
 variable "app_artifacts_s3_bucket" { default = "bordozer-artifacts" }
 variable "keep_logs_days" {
   default = 3
