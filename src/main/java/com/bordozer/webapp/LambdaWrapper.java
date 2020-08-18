@@ -2,6 +2,8 @@ package com.bordozer.webapp;
 
 import com.bordozer.webapp.exception.LambdaInvokeException;
 import com.bordozer.webapp.model.LambdaResponse;
+import com.bordozer.webapp.model.LambdaSuccessResponse;
+import com.bordozer.webapp.model.LambdaErrorResponse;
 import com.bordozer.webapp.utils.JsonUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -60,9 +63,13 @@ public class LambdaWrapper {
 
         try (final CloseableHttpClient httpClient = HttpClients.createDefault()) {
             try (final CloseableHttpResponse response = httpClient.execute(httpGet)) {
+                final var responseCode = response.getStatusLine().getStatusCode();
                 final HttpEntity entity = response.getEntity();
                 final var responseBody = EntityUtils.toString(entity);
-                return JsonUtils.read(responseBody, LambdaResponse.class);
+                if (responseCode != HttpStatus.OK.value()) {
+                    return JsonUtils.read(responseBody, LambdaErrorResponse.class);
+                }
+                return JsonUtils.read(responseBody, LambdaSuccessResponse.class);
             }
         } catch (final IOException ex) {
             log.error("Error calling lambda", ex);
