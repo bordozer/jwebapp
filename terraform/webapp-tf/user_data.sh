@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "version 1"
+
 # install software
 sudo yum update -y
 sudo yum install mc -y
