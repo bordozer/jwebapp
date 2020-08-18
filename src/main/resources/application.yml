@@ -39,8 +39,8 @@ spring:
 aws:
   lambda:
     schema: https
-    host: localhost
-    port: 9112
+    host: test-jlambda.visual-guitar.org
+    port: 443
 
 ---
 spring:
@@ -49,5 +49,5 @@ spring:
 aws:
   lambda:
     schema: https
-    host: localhost
-    port: 9112
+    host: jlambda.visual-guitar.org
+    port: 443

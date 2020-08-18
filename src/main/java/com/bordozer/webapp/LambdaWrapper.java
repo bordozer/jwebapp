@@ -42,7 +42,7 @@ public class LambdaWrapper {
         builder.setScheme(lambdaSchema)
                 .setHost(lambdaHost)
                 .setPort(lambdaPort)
-                .setPath("/api/value")
+                .setPath("/api")
                 .setParameters(newArrayList());
         final URI uri = builder.build();
         log.info(String.format("Lambda request string: \"%s\"", uri.toString()));
