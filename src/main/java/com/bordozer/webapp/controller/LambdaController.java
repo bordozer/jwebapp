@@ -1,6 +1,7 @@
 package com.bordozer.webapp.controller;
 
-import com.bordozer.webapp.LambdaClient;
+import com.bordozer.webapp.LambdaWrapper;
+import com.bordozer.webapp.model.LambdaResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class LambdaController {
 
-    private final LambdaClient lambdaClient;
+    private final LambdaWrapper lambdaWrapper;
 
-    @GetMapping("")
-    public ResponseEntity<String> localize() {
-        log.info("Health check");
-        final var value = lambdaClient.invoke();
+    @GetMapping("/lambda")
+    public ResponseEntity<LambdaResponse> invokeLambda() {
+        log.info("Invoke lambda endpoint");
+        final var value = lambdaWrapper.invoke();
         return new ResponseEntity<>(value, HttpStatus.OK);
     }
 }
