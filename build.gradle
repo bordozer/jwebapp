@@ -21,7 +21,7 @@ targetCompatibility = JavaVersion.VERSION_11
 }*/
 
 bootJar {
-	archiveFileName = 'webapp'
+	archiveFileName = 'webapp.jar'
 	launchScript()
 }
 
