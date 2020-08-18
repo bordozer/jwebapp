@@ -14,4 +14,4 @@
 *.tfstate
 *.tfstate.backup
 
-/terraform/webservice/.terraform/
+/terraform/webapp-tf/.terraform/
