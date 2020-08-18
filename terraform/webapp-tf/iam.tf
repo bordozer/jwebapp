@@ -1,5 +1,5 @@
-resource "aws_iam_role" "service_iam_role" {
-  name = "${local.aws_service_name}-iam-role"
+resource "aws_iam_role" "ec2_iam_role" {
+  name = "${local.aws_service_name}-ec2-iam-role"
 
   assume_role_policy = <<EOF
 {
@@ -22,7 +22,7 @@ EOF
 
 resource "aws_iam_role_policy" "service_s3_access_policy" {
   name = "${local.aws_service_name}-role-policy"
-  role = aws_iam_role.service_iam_role.id
+  role = aws_iam_role.ec2_iam_role.id
   policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -42,7 +42,7 @@ EOF
 
 resource "aws_iam_role_policy" "cloud_watch_logs_policy" {
   name = "${local.aws_service_name}-cloud-watch-logs-policy"
-  role = aws_iam_role.service_iam_role.id
+  role = aws_iam_role.ec2_iam_role.id
   policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -61,7 +61,7 @@ EOF
 
 resource "aws_iam_role_policy" "get_parameter_policy" {
   name = "${local.aws_service_name}-get-parameter-store-policy"
-  role = aws_iam_role.service_iam_role.id
+  role = aws_iam_role.ec2_iam_role.id
   policy = <<EOF
 {
     "Version": "2012-10-17",

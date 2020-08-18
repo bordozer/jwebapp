@@ -1,39 +1,31 @@
-resource "aws_cloudwatch_metric_alarm" "cpu_usage_is_very_high" {
-  alarm_name = "${local.aws_service_name}-CPU-is-too-high"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods = 3 # The number of periods over which data is compared to the specified threshold.
-  metric_name = "CPUUtilization"
-  namespace = "AWS/EC2"
-  period = 120 # The period in seconds over which the specified statistic is applied
-  statistic = "Average"
-  threshold = 85 # The value against which the specified statistic is compared
-  dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.service_asg.name
-  }
-  alarm_description = "Add an instance if CPU Utilization is too high"
-  alarm_actions = [
-    aws_autoscaling_policy.scale_out_policy.arn,
-    data.aws_sns_topic.notification.arn
-  ]
-  ok_actions = [
-    data.aws_sns_topic.notification.arn
-  ]
+resource "aws_cloudwatch_metric_alarm" "cpu_utilization_alarm" {
+  alarm_name                = "${local.aws_service_name}-cpu-alarm"
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
+  evaluation_periods        = "2"
+  metric_name               = "CPUUtilization"
+  namespace                 = "AWS/EC2"
+  period                    = "120"
+  statistic                 = "Average"
+  threshold                 = "80"
+  alarm_description         = "This metric monitors ec2 cpu utilization"
+  insufficient_data_actions = []
 }
 
-resource "aws_cloudwatch_metric_alarm" "cpu_usage_is_very_low" {
-  alarm_name = "${local.aws_service_name}-CPU-is-too-low"
-  comparison_operator = "LessThanOrEqualToThreshold"
-  evaluation_periods = 1
-  metric_name = "CPUUtilization"
-  namespace = "AWS/EC2"
-  period = 60
-  statistic = "Average"
-  threshold = 40
+resource "aws_cloudwatch_metric_alarm" "lb_healthy_hosts" {
+  alarm_name          = "${local.aws_service_name}-healthy-hosts-alarm"
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "HealthyHostCount"
+  namespace           = "AWS/ApplicationELB"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = "1"
+  alarm_description   = "Number of ${local.service_instance_name} nodes healthy in Target Group"
+  actions_enabled     = "true"
+  alarm_actions       = [data.aws_sns_topic.notification.arn]
+  ok_actions          = [data.aws_sns_topic.notification.arn]
   dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.service_asg.name
+    TargetGroup  = aws_lb_target_group.lb_tg.arn_suffix
+    LoadBalancer = aws_lb.front_end.arn_suffix
   }
-  alarm_description = "Remove an instance if CPU Utilization is too low"
-  alarm_actions = [
-    aws_autoscaling_policy.scale_in_policy.arn
-  ]
 }

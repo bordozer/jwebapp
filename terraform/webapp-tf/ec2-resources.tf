@@ -1,6 +1,6 @@
 resource "aws_iam_instance_profile" "instance_profile" {
   name = "${local.aws_service_name}-instance-profile"
-  role = aws_iam_role.service_iam_role.name
+  role = aws_iam_role.ec2_iam_role.name
 }
 
 data "template_file" "ec2_userdata" {
