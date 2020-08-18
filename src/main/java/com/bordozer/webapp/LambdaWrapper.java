@@ -1,13 +1,12 @@
 package com.bordozer.webapp;
 
 import com.bordozer.webapp.exception.LambdaInvokeException;
-import com.bordozer.webapp.model.LambdaResponse;
-import com.bordozer.webapp.model.LambdaSuccessResponse;
+import com.bordozer.webapp.model.AbstractLambdaResponse;
 import com.bordozer.webapp.model.LambdaErrorResponse;
+import com.bordozer.webapp.model.LambdaSuccessResponse;
 import com.bordozer.webapp.utils.JsonUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -30,6 +29,7 @@ import static com.google.common.collect.Lists.newArrayList;
 @Component
 public class LambdaWrapper {
 
+    public static final String LAMBDA_PATH = "/api";
     private static final int CONNECTION_TIMEOUT_MS = 20000;
 
     @Value("${aws.lambda.schema}")
@@ -40,12 +40,12 @@ public class LambdaWrapper {
     private Integer lambdaPort;
 
     @SneakyThrows
-    public LambdaResponse invoke() {
+    public AbstractLambdaResponse invoke() {
         final URIBuilder builder = new URIBuilder();
         builder.setScheme(lambdaSchema)
                 .setHost(lambdaHost)
                 .setPort(lambdaPort)
-                .setPath("/api")
+                .setPath(LAMBDA_PATH)
                 .setParameters(newArrayList());
         final URI uri = builder.build();
         log.info(String.format("Lambda request string: \"%s\"", uri.toString()));
@@ -64,16 +64,30 @@ public class LambdaWrapper {
         try (final CloseableHttpClient httpClient = HttpClients.createDefault()) {
             try (final CloseableHttpResponse response = httpClient.execute(httpGet)) {
                 final var responseCode = response.getStatusLine().getStatusCode();
-                final HttpEntity entity = response.getEntity();
-                final var responseBody = EntityUtils.toString(entity);
-                if (responseCode == HttpStatus.OK.value()) {
-                    return JsonUtils.read(responseBody, LambdaSuccessResponse.class);
-                }
-                return JsonUtils.read(responseBody, LambdaErrorResponse.class);
+                final var responseBody = EntityUtils.toString(response.getEntity());
+                return getLambdaResponse(responseCode, responseBody);
             }
         } catch (final IOException ex) {
             log.error("Error calling lambda", ex);
             throw new LambdaInvokeException(ex.getMessage());
         }
+    }
+
+    private AbstractLambdaResponse getLambdaResponse(final int responseCode, final String responseBody) {
+        final var httpStatus = HttpStatus.valueOf(responseCode);
+        switch (httpStatus) {
+            case OK:
+                return createLambdaResponse(httpStatus, responseBody, LambdaSuccessResponse.class);
+            case UNAUTHORIZED:
+                return createLambdaResponse(httpStatus, responseBody, LambdaErrorResponse.class);
+            default:
+                throw new IllegalArgumentException(String.format("Unsupported lambda's response status: \"%s\"", httpStatus));
+        }
+    }
+
+    private AbstractLambdaResponse createLambdaResponse(final HttpStatus httpStatus, final String responseBody, final Class<? extends AbstractLambdaResponse> clazz) {
+        final var response = JsonUtils.read(responseBody, clazz);
+        response.setStatus(httpStatus);
+        return response;
     }
 }

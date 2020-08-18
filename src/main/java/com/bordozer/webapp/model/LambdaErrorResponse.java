@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
-public class LambdaErrorResponse implements LambdaResponse {
+@EqualsAndHashCode(callSuper = true)
+public class LambdaErrorResponse extends AbstractLambdaResponse {
     private String message;
 }

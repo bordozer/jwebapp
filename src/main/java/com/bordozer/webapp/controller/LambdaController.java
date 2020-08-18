@@ -1,7 +1,7 @@
 package com.bordozer.webapp.controller;
 
 import com.bordozer.webapp.LambdaWrapper;
-import com.bordozer.webapp.model.LambdaResponse;
+import com.bordozer.webapp.model.AbstractLambdaResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class LambdaController {
     private final LambdaWrapper lambdaWrapper;
 
     @GetMapping("/lambda")
-    public ResponseEntity<LambdaResponse> invokeLambda() {
+    public ResponseEntity<AbstractLambdaResponse> invokeLambda() {
         log.info("Invoke lambda endpoint");
         final var value = lambdaWrapper.invoke();
         return new ResponseEntity<>(value, HttpStatus.OK);

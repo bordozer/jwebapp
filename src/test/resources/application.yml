@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: webapp
+
+server:
+  port: 9011
+  servlet:
+    session:
+      timeout: 864000
+
+logging:
+  level:
+    root: info
+
+management:
+  server:
+    port: 9111
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env,heapdump,sessions,httptrace,logfile
+
+aws:
+  lambda:
+    schema: http
+    host: localhost
+    port: 9112
+
