@@ -29,7 +29,7 @@ import static com.google.common.collect.Lists.newArrayList;
 @Component
 public class LambdaWrapper {
 
-    public static final String LAMBDA_PATH = "/api";
+    public static final String LAMBDA_PATH = "/jlambda-stage/api";
     private static final int CONNECTION_TIMEOUT_MS = 20000;
 
     @Value("${aws.lambda.schema}")

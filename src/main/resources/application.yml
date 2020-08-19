@@ -39,7 +39,7 @@ spring:
 aws:
   lambda:
     schema: https
-    host: test-jlambda.visual-guitar.org
+    host: qtbvxa3jzg.execute-api.eu-west-3.amazonaws.com
     port: 443
 
 ---
