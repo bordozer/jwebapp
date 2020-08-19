@@ -15,7 +15,7 @@ targetCompatibility = JavaVersion.VERSION_11
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 bootJar {
-	archiveFileName = 'webapp.jar'
+	archiveFileName = 'jwebapp.jar'
 	launchScript()
 }
 
