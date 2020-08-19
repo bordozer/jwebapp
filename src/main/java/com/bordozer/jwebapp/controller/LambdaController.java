@@ -4,6 +4,7 @@ import com.bordozer.jwebapp.LambdaWrapper;
 import com.bordozer.jwebapp.model.LambdaResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +20,12 @@ public class LambdaController {
 
     @GetMapping("/lambda")
     public ResponseEntity<LambdaResponse> invokeLambda() {
-        log.info("Invoke lambda endpoint");
+        log.info("JWebapp lambda endpoint");
         final var lambdaResponse = lambdaWrapper.get();
-        return new ResponseEntity<>(lambdaResponse, lambdaResponse.getStatus());
+        return new ResponseEntity<>(lambdaResponse, getHttpStatus(lambdaResponse));
+    }
+
+    private HttpStatus getHttpStatus(final LambdaResponse lambdaResponse) {
+        return lambdaResponse.getStatus() == HttpStatus.OK ? HttpStatus.OK : HttpStatus.EXPECTATION_FAILED;
     }
 }
