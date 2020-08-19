@@ -4,6 +4,7 @@ variable "route53_record" {}
 
 variable "git_hash" {}
 variable "git_branch" {}
+variable "git_repo_name" {}
 
 variable "ssh_public_key" {
   default = "jwebapp-key"
@@ -54,9 +55,11 @@ locals {
   service_instance_name = "${var.service_name}-${var.environment_name}"
   aws_service_name = "tf-${local.service_instance_name}"
   common_tags = {
-    Name = local.service_instance_name
-    ServiceName = var.service_name
-    Environment = var.environment_name
+    Name            = local.service_instance_name
+    ServiceName     = var.service_name
+    Environment     = var.environment_name
+    CreatedBy       = "Terraform"
+    GitRepoName     = var.git_repo_name
   }
   s3_app_artifact_name = local.aws_service_name
   app_source_artifact = "../../build/libs/${var.service_name}.jar"

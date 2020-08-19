@@ -23,7 +23,8 @@ if [ "force" = "${FORCE}" ]; then
       -var="service_name=${SERVICE_NAME}" \
       -var="environment_name=${ENV}" \
       -var="git_branch=ignore" \
-      -var="git_hash=ignore"
+      -var="git_hash=ignore" \
+      -var="git_repo_name=ignore"
    echo "Environment '${ENV}' has been destroyed. R.I.P."
    exit 0
 fi
@@ -35,7 +36,8 @@ if [ "${confirm}" = "${CONFIRM_STR}" ]; then
       -var="service_name=${SERVICE_NAME}" \
       -var="environment_name=${ENV}" \
       -var="git_branch=ignore" \
-      -var="git_hash=ignore"
+      -var="git_hash=ignore" \
+      -var="git_repo_name=ignore"
    echo "Environment '${YELLOW}${ENV}${DEFAULT}' has been destroyed. R.I.P."
    exit 0
 fi
