@@ -10,7 +10,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_alarm" {
   alarm_description         = "This metric monitors ec2 cpu utilization"
   insufficient_data_actions = []
   alarm_actions             = [data.aws_sns_topic.notification.arn]
-  ok_actions                = [data.aws_sns_topic.notification.arn]
+  ok_actions                = []
   dimensions = {
     InstanceId  = aws_instance.ec2_instance.id
   }

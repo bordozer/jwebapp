@@ -9,8 +9,4 @@ import org.springframework.http.HttpStatus;
 public class LambdaResponse {
     private HttpStatus status;
     private String value;
-
-    public int getStatusCode() {
-        return status.value();
-    }
 }

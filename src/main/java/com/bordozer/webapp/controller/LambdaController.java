@@ -21,7 +21,7 @@ public class LambdaController {
     @GetMapping("/lambda")
     public ResponseEntity<LambdaResponse> invokeLambda() {
         log.info("Invoke lambda endpoint");
-        final var value = lambdaWrapper.invoke();
-        return new ResponseEntity<>(value, HttpStatus.OK);
+        final var lambdaResponse = lambdaWrapper.invoke();
+        return new ResponseEntity<>(lambdaResponse, lambdaResponse.getStatus());
     }
 }
