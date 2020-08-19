@@ -16,18 +16,14 @@ public final class LambdaResponseConverter {
 
         final LambdaResponse response = new LambdaResponse();
         response.setStatus(httpStatus);
-
-        switch (httpStatus) {
-            case OK:
-                response.setValue(JsonUtils.read(responseBody, LambdaSuccessResponse.class).getPayload());
-                break;
-            case UNAUTHORIZED:
-            case FORBIDDEN:
-                response.setValue(JsonUtils.read(responseBody, LambdaUnauthorizedResponse.class).getMessage());
-                break;
-            default:
-                throw new IllegalArgumentException(String.format("Unsupported lambda's response status: \"%s\"", httpStatus));
-        }
+        response.setValue(getBody(responseBody, httpStatus));
         return response;
+    }
+
+    private static String getBody(final String responseBody, final HttpStatus httpStatus) {
+        if (httpStatus == HttpStatus.OK) {
+            return JsonUtils.read(responseBody, LambdaSuccessResponse.class).getPayload();
+        }
+        return JsonUtils.read(responseBody, LambdaUnauthorizedResponse.class).getMessage();
     }
 }

@@ -67,6 +67,7 @@ public class LambdaWrapper {
             try (final CloseableHttpResponse response = httpClient.execute(httpGet)) {
                 final var responseCode = response.getStatusLine().getStatusCode();
                 final var responseBody = EntityUtils.toString(response.getEntity());
+                log.info("Lambda response: code=\"{}\", body=\"{}\"", responseCode, responseBody);
                 return LambdaResponseConverter.convert(responseCode, responseBody);
             }
         } catch (final IOException ex) {
