@@ -20,7 +20,7 @@ public class LambdaController {
     @GetMapping("/lambda")
     public ResponseEntity<LambdaResponse> invokeLambda() {
         log.info("Invoke lambda endpoint");
-        final var lambdaResponse = lambdaWrapper.invoke();
+        final var lambdaResponse = lambdaWrapper.get();
         return new ResponseEntity<>(lambdaResponse, lambdaResponse.getStatus());
     }
 }

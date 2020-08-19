@@ -1,10 +1,9 @@
 package com.bordozer.jwebapp;
 
+import com.bordozer.jwebapp.converter.LambdaResponseConverter;
 import com.bordozer.jwebapp.exception.LambdaInvokeException;
 import com.bordozer.jwebapp.model.LambdaResponse;
-import com.bordozer.jwebapp.model.LambdaSuccessResponse;
-import com.bordozer.jwebapp.model.LambdaUnauthorizedResponse;
-import com.bordozer.jwebapp.utils.JsonUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
@@ -16,8 +15,9 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -27,9 +27,9 @@ import static com.google.common.collect.Lists.newArrayList;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class LambdaWrapper {
 
-    public static final String LAMBDA_PATH = "/jlambda-stage/api";
     private static final int CONNECTION_TIMEOUT_MS = 20000;
 
     @Value("${aws.lambda.schema}")
@@ -38,14 +38,16 @@ public class LambdaWrapper {
     private String lambdaHost;
     @Value("${aws.lambda.port}")
     private Integer lambdaPort;
+    @Value("${aws.lambda.path}")
+    private String lambdaPath;
 
     @SneakyThrows
-    public LambdaResponse invoke() {
+    public LambdaResponse get() {
         final URIBuilder builder = new URIBuilder();
         builder.setScheme(lambdaSchema)
                 .setHost(lambdaHost)
                 .setPort(lambdaPort)
-                .setPath(LAMBDA_PATH)
+                .setPath(lambdaPath)
                 .setParameters(newArrayList());
         final URI uri = builder.build();
         log.info(String.format("Lambda request string: \"%s\"", uri.toString()));
@@ -65,29 +67,11 @@ public class LambdaWrapper {
             try (final CloseableHttpResponse response = httpClient.execute(httpGet)) {
                 final var responseCode = response.getStatusLine().getStatusCode();
                 final var responseBody = EntityUtils.toString(response.getEntity());
-                return getLambdaResponse(responseCode, responseBody);
+                return LambdaResponseConverter.convert(responseCode, responseBody);
             }
         } catch (final IOException ex) {
             log.error("Error calling lambda", ex);
             throw new LambdaInvokeException(ex.getMessage());
-        }
-    }
-
-    private LambdaResponse getLambdaResponse(final int responseCode, final String responseBody) {
-        final var httpStatus = HttpStatus.valueOf(responseCode);
-
-        final LambdaResponse response = new LambdaResponse();
-        response.setStatus(httpStatus);
-
-        switch (httpStatus) {
-            case OK:
-                response.setValue(JsonUtils.read(responseBody, LambdaSuccessResponse.class).getPayload());
-                return response;
-            case UNAUTHORIZED:
-                response.setValue(JsonUtils.read(responseBody, LambdaUnauthorizedResponse.class).getMessage());
-                return response;
-            default:
-                throw new IllegalArgumentException(String.format("Unsupported lambda's response status: \"%s\"", httpStatus));
         }
     }
 }

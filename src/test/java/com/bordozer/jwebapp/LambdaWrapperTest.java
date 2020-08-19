@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static com.bordozer.jwebapp.LambdaWrapper.LAMBDA_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -32,6 +31,8 @@ class LambdaWrapperTest {
 
     @Value("${aws.lambda.port}")
     private Integer port;
+    @Value("${aws.lambda.path}")
+    private String path;
 
     @BeforeEach
     void testUp() {
@@ -48,14 +49,14 @@ class LambdaWrapperTest {
     @SneakyThrows
     void shouldReturnSuccessResponse() {
         // given
-        wm.stubFor(WireMock.get(WireMock.urlPathEqualTo(LAMBDA_PATH))
+        wm.stubFor(WireMock.get(WireMock.urlPathEqualTo(path))
                 .willReturn(WireMock.aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withHeader("Content-Type", "application/json")
                         .withBody(LAMBDA_SUCCESS_RESPONSE)
                 ));
         // when
-        final var response = lambdaWrapper.invoke();
+        final var response = lambdaWrapper.get();
 
         //then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK);
@@ -66,14 +67,14 @@ class LambdaWrapperTest {
     @SneakyThrows
     void shouldReturnErrorResponse() {
         // given
-        wm.stubFor(WireMock.get(WireMock.urlPathEqualTo(LAMBDA_PATH))
+        wm.stubFor(WireMock.get(WireMock.urlPathEqualTo(path))
                 .willReturn(WireMock.aResponse()
                         .withStatus(HttpStatus.UNAUTHORIZED.value())
                         .withHeader("Content-Type", "application/json")
                         .withBody(LAMBDA_ERROR_RESPONSE)
                 ));
         // when
-        final var response = lambdaWrapper.invoke();
+        final var response = lambdaWrapper.get();
 
         //then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED);

@@ -25,4 +25,5 @@ aws:
     schema: http
     host: localhost
     port: 9112
+    path: /api
 

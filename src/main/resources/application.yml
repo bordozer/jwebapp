@@ -31,6 +31,7 @@ aws:
     schema: http
     host: localhost
     port: 9112
+    path: /api
 
 ---
 spring:
@@ -39,8 +40,9 @@ spring:
 aws:
   lambda:
     schema: https
-    host: qtbvxa3jzg.execute-api.eu-west-3.amazonaws.com
+    host: g7ga8rwyte.execute-api.eu-west-3.amazonaws.com/
     port: 443
+    path: /test-stage/api
 
 ---
 spring:
@@ -51,3 +53,4 @@ aws:
     schema: https
     host: jlambda.visual-guitar.org
     port: 443
+    path: /prod-stage/api
