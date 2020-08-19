@@ -16,7 +16,6 @@ public class HealthCheckController {
 
     @GetMapping("")
     public ResponseEntity<String> localize() {
-        log.info("Health check");
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 }

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./gradlew clean build
+JAVA_HOME=/opt/java/jdk11 && ./gradlew clean build
