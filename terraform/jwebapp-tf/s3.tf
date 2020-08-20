@@ -5,7 +5,8 @@ resource "aws_s3_bucket_object" "artifact_upload" {
   etag          = filemd5(local.app_source_artifact)
 
   tags = {
-    git_hash = var.git_hash
-    git_branch = var.git_branch
+    git_repo    = var.git_repo_name
+    git_branch  = var.git_branch
+    git_hash    = var.git_hash
   }
 }

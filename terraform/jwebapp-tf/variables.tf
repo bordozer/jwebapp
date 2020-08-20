@@ -1,5 +1,5 @@
 variable "service_name" {}
-variable "environment_name" {}
+variable "environment" {}
 variable "route53_record" {}
 
 variable "git_hash" {}
@@ -52,12 +52,12 @@ variable "keep_logs_days" {
 variable "certificate_arn" { default = "arn:aws:acm:eu-west-3:899415655760:certificate/443e4bee-2470-4b79-aed0-895aaedbb2ed" }
 
 locals {
-  service_instance_name = "${var.service_name}-${var.environment_name}"
+  service_instance_name = "${var.service_name}-${var.environment}"
   aws_service_name = "tf-${local.service_instance_name}"
   common_tags = {
     Name            = local.service_instance_name
     ServiceName     = var.service_name
-    Environment     = var.environment_name
+    Environment     = var.environment
     CreatedBy       = "Terraform"
     GitRepoName     = var.git_repo_name
   }

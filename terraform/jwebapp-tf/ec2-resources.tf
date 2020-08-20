@@ -8,7 +8,7 @@ data "template_file" "ec2_userdata" {
   vars = {
     t_service_name = var.service_name
     t_service_instance_name = local.service_instance_name
-    t_env = var.environment_name
+    t_env = var.environment
     t_app_dir = "/opt/${local.service_instance_name}"
     t_app_dev_db_dir = "/opt/dev-db"
     t_app_artifact_s3_bucket = var.app_artifacts_s3_bucket

@@ -29,7 +29,7 @@ terraform init \
 
 terraform apply -var-file="env/${ENV}.tfvars" -auto-approve \
   -var="service_name=${SERVICE_NAME}" \
-  -var="environment_name=${ENV}" \
+  -var="environment=${ENV}" \
   -var="git_branch=${GIT_HASH}" \
   -var="git_hash=${GIT_BRANCH}" \
   -var="git_repo_name=${GIT_REPO_NAME}"
