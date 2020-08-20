@@ -5,8 +5,13 @@ resource "aws_s3_bucket_object" "artifact_upload" {
   etag          = filemd5(local.app_source_artifact)
 
   tags = {
-    git_repo    = var.git_repo_name
-    git_branch  = var.git_branch
-    git_hash    = var.git_hash
+    Name            = local.service_instance_name
+    ServiceName     = var.service_name
+    Environment     = var.environment
+    CreatedBy       = "Terraform"
+    GitRepoName     = var.git_repo_name
+    GitRepo         = var.git_repo_name
+    GitBranch       = var.git_branch
+    GitHash         = var.git_hash
   }
 }
