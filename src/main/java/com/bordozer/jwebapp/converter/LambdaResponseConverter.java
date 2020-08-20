@@ -23,6 +23,9 @@ public final class LambdaResponseConverter {
         if (httpStatus == HttpStatus.OK) {
             return JsonUtils.read(responseBody, LambdaSuccessResponse.class).getPayload();
         }
+        if (httpStatus == HttpStatus.NOT_FOUND) {
+            return "Lambda is inaccessible";
+        }
         return JsonUtils.read(responseBody, LambdaUnauthorizedResponse.class).getMessage();
     }
 }
