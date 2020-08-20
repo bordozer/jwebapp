@@ -1,14 +1,19 @@
 package com.bordozer.jwebapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 
 @Getter
-@Setter
+@Builder
 public class LambdaResponse {
-    private HttpStatus status;
-    private String value;
+    @JsonIgnore
+    @NonNull
+    private final HttpStatus status;
+    @NonNull
+    private final String value;
 
     public int getStatusCode() {
         return status.value();

@@ -13,11 +13,10 @@ public final class LambdaResponseConverter {
 
     public static LambdaResponse convert(final int responseCode, final String responseBody) {
         final var httpStatus = HttpStatus.valueOf(responseCode);
-
-        final LambdaResponse response = new LambdaResponse();
-        response.setStatus(httpStatus);
-        response.setValue(getBody(responseBody, httpStatus));
-        return response;
+        return LambdaResponse.builder()
+                .status(httpStatus)
+                .value(getBody(responseBody, httpStatus))
+                .build();
     }
 
     private static String getBody(final String responseBody, final HttpStatus httpStatus) {
