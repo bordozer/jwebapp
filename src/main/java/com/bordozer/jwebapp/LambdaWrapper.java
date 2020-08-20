@@ -1,7 +1,7 @@
 package com.bordozer.jwebapp;
 
 import com.bordozer.jwebapp.converter.LambdaResponseConverter;
-import com.bordozer.jwebapp.exception.LambdaInvokeException;
+import com.bordozer.jwebapp.model.Lambda;
 import com.bordozer.jwebapp.model.LambdaResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -16,10 +16,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -30,24 +32,27 @@ public class LambdaWrapper {
 
     private static final int CONNECTION_TIMEOUT_MS = 20000;
 
-    @Value("${aws.lambda.schema}")
-    private String lambdaSchema;
-    @Value("${aws.lambda.host}")
-    private String lambdaHost;
-    @Value("${aws.lambda.port}")
-    private Integer lambdaPort;
-    @Value("${aws.lambda.path}")
-    private String lambdaPath;
+    @Value("${aws.jlambda.schema}")
+    private String jlambdaSchema;
+    @Value("${aws.jlambda.host}")
+    private String jlambdaHost;
+    @Value("${aws.jlambda.port}")
+    private Integer jlambdaPort;
+    @Value("${aws.jlambda.path}")
+    private String jlambdaPath;
+
+    @Value("${aws.olalambda.schema}")
+    private String olalambdaSchema;
+    @Value("${aws.olalambda.host}")
+    private String olalambdaHost;
+    @Value("${aws.olalambda.port}")
+    private Integer olalambdaPort;
+    @Value("${aws.olalambda.path}")
+    private String olalambdaPath;
 
     @SneakyThrows
-    public LambdaResponse get() {
-        final URIBuilder builder = new URIBuilder();
-        builder.setScheme(lambdaSchema)
-                .setHost(lambdaHost)
-                .setPort(lambdaPort)
-                .setPath(lambdaPath)
-                .setParameters(newArrayList());
-        final URI uri = builder.build();
+    public LambdaResponse get(final Lambda function) {
+        final URI uri = getUri(function);
         log.info(String.format("Lambda request string: \"%s\"", uri.toString()));
 
         final RequestConfig requestConfig = RequestConfig.custom()
@@ -70,7 +75,33 @@ public class LambdaWrapper {
             }
         } catch (final IOException ex) {
             log.error("Error calling lambda", ex);
-            throw new LambdaInvokeException(ex.getMessage());
+            return LambdaResponse.builder()
+                    .status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .value(ex.getMessage())
+                    .build();
         }
+    }
+
+    private URI getUri(final Lambda function) throws URISyntaxException {
+        final URIBuilder builder = new URIBuilder();
+        switch (function) {
+            case JLAMBDA:
+                builder.setScheme(jlambdaSchema)
+                        .setHost(jlambdaHost)
+                        .setPort(jlambdaPort)
+                        .setPath(jlambdaPath)
+                        .setParameters(newArrayList());
+                break;
+            case OLALAMBDA:
+                builder.setScheme(olalambdaSchema)
+                        .setHost(olalambdaHost)
+                        .setPort(olalambdaPort)
+                        .setPath(olalambdaPath)
+                        .setParameters(newArrayList());
+                break;
+            default:
+                throw new IllegalArgumentException(String.format("Unknown function parameter: \"%s\"", function));
+        }
+        return builder.build();
     }
 }

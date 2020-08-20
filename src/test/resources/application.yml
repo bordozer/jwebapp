@@ -21,9 +21,13 @@ management:
         include: health,info,metrics,env,heapdump,sessions,httptrace,logfile
 
 aws:
-  lambda:
+  jlambda:
     schema: http
     host: localhost
-    port: 9112
+    port: 9115
     path: /api
-
+  olalambda:
+    schema: http
+    host: localhost
+    port: 9116
+    path: /api

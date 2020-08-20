@@ -27,18 +27,12 @@ spring:
   profiles: dev
 
 aws:
-  lambda:
-    schema: http
-    host: localhost
-    port: 9112
-    path: /api
-
----
-spring:
-  profiles: aws-test
-
-aws:
-  lambda:
+  jlambda:
+    schema: https
+    host: unhxtazish.execute-api.eu-west-3.amazonaws.com
+    port: 443
+    path: /jlambda-test-stage/jlambda-test-api
+  olalambda:
     schema: https
     host: unhxtazish.execute-api.eu-west-3.amazonaws.com
     port: 443
@@ -46,11 +40,32 @@ aws:
 
 ---
 spring:
+  profiles: aws-test
+
+aws:
+  jlambda:
+    schema: https
+    host: unhxtazish.execute-api.eu-west-3.amazonaws.com
+    port: 443
+    path: /jlambda-test-stage/jlambda-test-api
+  olalambda:
+    schema: https
+    host: unhxtazish.execute-api.eu-west-3.amazonaws.com
+    port: 443
+    path: /jlambda-test-stage/jlambda-test-api
+---
+spring:
   profiles: aws-prod
 
 aws:
-  lambda:
+  jlambda:
     schema: https
     host: g7ga8rwyte.execute-api.eu-west-3.amazonaws.com
     port: 443
     path: /jlambda-test-stage/jlambda-test-api
+  olalambda:
+    schema: https
+    host: unhxtazish.execute-api.eu-west-3.amazonaws.com
+    port: 443
+    path: /jlambda-test-stage/jlambda-test-api
+

@@ -1,5 +1,6 @@
 package com.bordozer.jwebapp;
 
+import com.bordozer.jwebapp.model.Lambda;
 import com.bordozer.jwebapp.utils.CommonUtils;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -29,9 +30,9 @@ class LambdaWrapperTest {
 
     private WireMockServer wm;
 
-    @Value("${aws.lambda.port}")
+    @Value("${aws.jlambda.port}")
     private Integer port;
-    @Value("${aws.lambda.path}")
+    @Value("${aws.jlambda.path}")
     private String path;
 
     @BeforeEach
@@ -56,7 +57,7 @@ class LambdaWrapperTest {
                         .withBody(LAMBDA_SUCCESS_RESPONSE)
                 ));
         // when
-        final var response = lambdaWrapper.get();
+        final var response = lambdaWrapper.get(Lambda.JLAMBDA);
 
         //then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK);
@@ -74,7 +75,7 @@ class LambdaWrapperTest {
                         .withBody(LAMBDA_ERROR_RESPONSE)
                 ));
         // when
-        final var response = lambdaWrapper.get();
+        final var response = lambdaWrapper.get(Lambda.JLAMBDA);
 
         //then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED);
