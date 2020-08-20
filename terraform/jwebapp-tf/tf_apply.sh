@@ -13,12 +13,12 @@ then
       exit 1;
 fi
 
+echo -e "Environment '${YELLOW}${ENV}${DEFAULT}' is going to be deployed to AWS"
+
 GIT_HASH=$(git rev-parse --short HEAD)
 GIT_BRANCH=$(git branch --show-current)
 GIT_REPO_NAME=$(basename `git rev-parse --show-toplevel`)
 echo -e "Git: ${GIT_BRANCH} (${GIT_HASH})"
-
-echo -e "Environment '${YELLOW}${ENV}${DEFAULT}' is going to be deployed to AWS"
 
 terraform -version
 
