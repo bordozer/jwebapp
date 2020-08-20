@@ -52,7 +52,8 @@ aws:
     schema: https
     host: unhxtazish.execute-api.eu-west-3.amazonaws.com
     port: 443
-    path: /jlambda-test-stage/jlambda-test-api
+    path: /olalambda-test-stage/olalambda-test-api
+
 ---
 spring:
   profiles: aws-prod
@@ -67,5 +68,5 @@ aws:
     schema: https
     host: unhxtazish.execute-api.eu-west-3.amazonaws.com
     port: 443
-    path: /jlambda-test-stage/jlambda-test-api
+    path: /olalambda-test-stage/olalambda-test-api
 
